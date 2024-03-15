@@ -12,9 +12,13 @@ class User(Model):
     class Meta:
         database = db
 
+# テーブルを削除する
+db.drop_tables([User])
 
 db.create_tables([User])
 
 # ユーザーデータ挿入
 User.create(username="nao", password="nao1234")
 User.create(username="たくま", password="taku1234")
+
+

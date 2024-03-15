@@ -1,0 +1,10 @@
+リフレッシュトークンの発行
+
+curl -X GET "http://localhost:8000/refresh_token/" -H  "accept: application/json" -H  "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcxODI2Mjg2OSwidXNl
+cl9pZCI6MX0.OrRTl4w_trnIdhqdn1-6wkAzJOBd2gQg_M73HroQZrA"
+
+{
+    "access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzX3Rva2VuIiwiZXhwIjoxNzEwNDg5MTUwLCJ1c2VyX2lkIjoxfQ.fSZDfeNnizL1HJvlz9XIpODofZTD8K-fnX2hPeP-o48",
+    "refresh_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcxODI2MzM1MCwidXNlcl9pZCI6MX0.Fi9V9x4LPu00pY-WlMo4oxsNq8-5k93PwgYkjW6CgM0",
+    "token_type":"bearer"
+}

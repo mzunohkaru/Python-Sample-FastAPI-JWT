@@ -38,7 +38,7 @@ def create_tokens(user_id: int):
         "user_id": user_id,
     }
 
-    # トークン作成（本来は'SECRET_KEY123'はもっと複雑にする）
+    # トークン作成
     access_token = jwt.encode(access_payload, SECRET_KEY, algorithm=ALGORITHM)
     refresh_token = jwt.encode(refresh_payload, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -54,8 +54,14 @@ def create_tokens(user_id: int):
 
 def get_current_user_from_token(token: str, token_type: str):
     """tokenからユーザーを取得"""
+
+    print("call")
+
     # トークンをデコードしてペイロードを取得。有効期限と署名は自動で検証される。
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+
+    print("payload", payload)
+    print("token_type", token_type)
 
     # トークンタイプが一致することを確認
     if payload["token_type"] != token_type:
@@ -63,6 +69,8 @@ def get_current_user_from_token(token: str, token_type: str):
 
     # DBからユーザーを取得
     user = User.get_by_id(payload["user_id"])
+
+    print("user", user)
 
     # リフレッシュトークンの場合、受け取ったものとDBに保存されているものが一致するか確認
     if token_type == "refresh_token" and user.refresh_token != token:
