@@ -1,0 +1,10 @@
+env/
+api/__pycache__/
+api/cruds/__pycache__/
+api/models/__pycache__/
+api/routers/__pycache__/
+api/schemas/__pycache__/
+
+*.env
+*.env.*
+env.*

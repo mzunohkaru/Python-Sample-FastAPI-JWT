@@ -1,0 +1,122 @@
+1. ユーザー認証:
+・ユーザーがユーザー名とパスワードを入力してログインを試みます。
+・サーバー側では、authenticate_user関数を使用して、提供された認証情報がデータベース内のものと一致するかを確認します。
+・パスワードは、データベースに保存される前にハッシュ化されます。ログイン時には、提供されたパスワードをハッシュ化し、保存されたハッシュと比較します。
+
+2. アクセストークンの生成:
+・認証が成功した場合、create_access_token関数を使用してJWTアクセストークンを生成します。
+・このトークンには、ユーザーを識別する情報（例: ユーザー名）と有効期限が含まれます。この情報は、トークンのペイロード部分にエンコードされます。
+・トークンは、秘密鍵（SECRET_KEY）を使用して署名され、トークンの改ざんを防ぎます。
+
+3. トークンの送信:
+・生成されたアクセストークンは、レスポンスとしてクライアントに送り返されます。
+・クライアントは、このトークンを受け取り、以降のリクエストの認証ヘッダーに含めてサーバーに送信します。
+
+4. トークンの検証:
+・サーバー側では、get_current_user関数を使用して、リクエストに含まれるトークンを検証します。
+・トークンは、秘密鍵（SECRET_KEY）とアルゴリズム（ALGORITHM）を使用してデコードされます。
+・トークンのペイロードからユーザー名を取得し、データベースからユーザー情報を取得します。
+・有効期限やトークンの形式が正しいかどうかもこの段階で検証されます。
+
+5. アクセスの許可:
+・トークンが有効であることが確認された場合、リクエストは処理され、ユーザーは要求したリソースへのアクセスを許可されます。
+・トークンが無効な場合は、認証エラーが返されます。
+
+
+---.¥¥¥./// = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aW0iLCJleHAiOjE3MTAzOTEwNDh9.RUFUYAxSXALZfMgCbytCypK2OlxMYCTKlqgRXylwitY
+
+auth
+
+<get_user>
+user_data {'username': 'tim', 'full_name': 'Tim Ruscica', 'email': 'tim@gmail.com', 'hashed_password': '$2b$12$2Ss8aodwv5mZjR1Ofee86.OgtdlekDXCtdB6xH.l/nUMd9K73tmXa', 'disabled': False}
+<authenticate_user>
+user username='tim' email='tim@gmail.com' full_name='Tim Ruscica' disabled=False hashed_password='$2b$12$2Ss8aodwv5mZjR1Ofee86.OgtdlekDXCtdB6xH.l/nUMd9K73tmXa'
+<create_access_token>
+to_encode {'sub': 'tim', 'exp': datetime.datetime(2024, 3, 14, 13, 37, 28, 244486, tzinfo=zoneinfo.ZoneInfo(key='Asia/Tokyo'))}
+encoded_jwt ---.¥¥¥.///
+
+
+token
+
+<get_user>
+user_data {'username': 'tim', 'full_name': 'Tim Ruscica', 'email': 'tim@gmail.com', 'hashed_password': '$2b$12$2Ss8aodwv5mZjR1Ofee86.OgtdlekDXCtdB6xH.l/nUMd9K73tmXa', 'disabled': False}
+user username='tim' email='tim@gmail.com' full_name='Tim Ruscica' disabled=False hashed_password='$2b$12$2Ss8aodwv5mZjR1Ofee86.OgtdlekDXCtdB6xH.l/nUMd9K73tmXa'
+<create_access_token>
+to_encode {'sub': 'tim', 'exp': datetime.datetime(2024, 3, 14, 13, 40, 23, 4731, tzinfo=zoneinfo.ZoneInfo(key='Asia/Tokyo'))}
+encoded_jwt ---.eyJzdWIiOiJ0aW0iLCJleHAiOjE3MTAzOTEyMjN9.bgILtXQ5VL7sEhFDa9X90XW50RINSOG8nu_Dscs86QI
+
+
+user me
+
+<get_current_user>
+get_current_user token ---.¥¥¥.///
+get_current_user payload {'sub': 'tim', 'exp': 1710391048}
+get_current_user username tim
+get_current_user token_data username='tim'
+<get_user>
+user_data {'username': 'tim', 'full_name': 'Tim Ruscica', 'email': 'tim@gmail.com', 'hashed_password': '$2b$12$2Ss8aodwv5mZjR1Ofee86.OgtdlekDXCtdB6xH.l/nUMd9K73tmXa', 'disabled': False}
+<get_current_user>
+get_current_user user username='tim' email='tim@gmail.com' full_name='Tim Ruscica' disabled=False hashed_password='$2b$12$2Ss8aodwv5mZjR1Ofee86.OgtdlekDXCtdB6xH.l/nUMd9K73tmXa'
+
+item
+
+<get_current_user>
+get_current_user token ---.¥¥¥.///
+get_current_user payload {'sub': 'tim', 'exp': 1710391048}
+get_current_user username tim
+get_current_user token_data username='tim'
+<get_user>
+user_data {'username': 'tim', 'full_name': 'Tim Ruscica', 'email': 'tim@gmail.com', 'hashed_password': '$2b$12$2Ss8aodwv5mZjR1Ofee86.OgtdlekDXCtdB6xH.l/nUMd9K73tmXa', 'disabled': False}
+<get_current_user>
+get_current_user user username='tim' email='tim@gmail.com' full_name='Tim Ruscica' disabled=False hashed_password='$2b$12$2Ss8aodwv5mZjR1Ofee86.OgtdlekDXCtdB6xH.l/nUMd9K73tmXa'
+
+
+token
+
+<Command>
+curl -X 'POST' \
+  'http://127.0.0.1:8000/token' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'grant_type=&username=tim&password=tim1234&scope=&client_id=&client_secret='
+<Response body>
+{
+  "access_token": "---.eyJzdWIiOiJ0aW0iLCJleHAiOjE3MTAzOTEyMjN9.bgILtXQ5VL7sEhFDa9X90XW50RINSOG8nu_Dscs86QI",
+  "token_type": "bearer"
+}
+
+user me
+
+<Command>
+curl -X 'GET' \
+  'http://127.0.0.1:8000/users/me/' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ---.¥¥¥.///'
+<Response body>
+{
+  "username": "tim",
+  "email": "tim@gmail.com",
+  "full_name": "Tim Ruscica",
+  "disabled": false
+}
+
+item
+
+<Command>
+curl -X 'GET' \
+  'http://127.0.0.1:8000/users/me/items' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer ---.¥¥¥.///'
+<Response body>
+[
+  {
+    "item_id": 1,
+    "owner": {
+      "username": "tim",
+      "email": "tim@gmail.com",
+      "full_name": "Tim Ruscica",
+      "disabled": false,
+      "hashed_password": "$2b$12$2Ss8aodwv5mZjR1Ofee86.OgtdlekDXCtdB6xH.l/nUMd9K73tmXa"
+    }
+  }
+]
